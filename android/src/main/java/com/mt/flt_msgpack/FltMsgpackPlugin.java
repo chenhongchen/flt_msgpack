@@ -1,4 +1,4 @@
-package com.mt.fltmsgpack;
+package com.mt.flt_msgpack;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -6,12 +6,12 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-/** FltmsgpackPlugin */
-public class FltmsgpackPlugin implements MethodCallHandler {
+/** FltMsgpackPlugin */
+public class FltMsgpackPlugin implements MethodCallHandler {
   /** Plugin registration. */
   public static void registerWith(Registrar registrar) {
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), "fltmsgpack");
-    channel.setMethodCallHandler(new FltmsgpackPlugin());
+    final MethodChannel channel = new MethodChannel(registrar.messenger(), "flt_msgpack");
+    channel.setMethodCallHandler(new FltMsgpackPlugin());
   }
 
   @Override

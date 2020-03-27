@@ -1,6 +1,6 @@
-# fltmsgpack_example
+# flt_msgpack_example
 
-Demonstrates how to use the fltmsgpack plugin.
+Demonstrates how to use the flt_msgpack plugin.
 
 ## Getting Started
 

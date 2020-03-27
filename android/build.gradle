@@ -1,4 +1,4 @@
-group 'com.mt.fltmsgpack'
+group 'com.mt.flt_msgpack'
 version '1.0'
 
 buildscript {

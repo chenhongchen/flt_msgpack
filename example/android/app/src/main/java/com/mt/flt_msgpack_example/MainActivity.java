@@ -1,4 +1,4 @@
-package com.mt.fltmsgpack_example;
+package com.mt.flt_msgpack_example;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

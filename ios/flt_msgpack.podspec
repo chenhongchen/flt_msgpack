@@ -2,11 +2,11 @@
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
 #
 Pod::Spec.new do |s|
-  s.name             = 'fltmsgpack'
+  s.name             = 'flt_msgpack'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter Msgpack plugin.'
+  s.summary          = 'A Msgpack Flutter plugin.'
   s.description      = <<-DESC
-A new Flutter Msgpack plugin.
+A Msgpack Flutter plugin.
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }

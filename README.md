@@ -1,6 +1,6 @@
-# fltmsgpack
+# flt_msgpack
 
-A new Flutter Msgpack plugin.
+A Msgpack Flutter plugin.
 
 ## Getting Started
 

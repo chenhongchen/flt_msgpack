@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:fltmsgpack/flt_msgpack.dart';
+import 'package:flt_msgpack/flt_msgpack.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
     String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      platformVersion = await Fltmsgpack.platformVersion;
+      platformVersion = await FltMsgpack.platformVersion;
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }

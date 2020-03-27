@@ -1,9 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fltmsgpack/flt_msgpack.dart';
+import 'package:flt_msgpack/flt_msgpack.dart';
 
 void main() {
-  const MethodChannel channel = MethodChannel('fltmsgpack');
+  const MethodChannel channel = MethodChannel('flt_msgpack');
 
   setUp(() {
     channel.setMockMethodCallHandler((MethodCall methodCall) async {
@@ -16,6 +16,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await Fltmsgpack.platformVersion, '42');
+    expect(await FltMsgpack.platformVersion, '42');
   });
 }

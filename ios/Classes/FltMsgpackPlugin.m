@@ -1,11 +1,11 @@
-#import "FltmsgpackPlugin.h"
+#import "FltMsgpackPlugin.h"
 
-@implementation FltmsgpackPlugin
+@implementation FltMsgpackPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:@"fltmsgpack"
+      methodChannelWithName:@"flt_msgpack"
             binaryMessenger:[registrar messenger]];
-  FltmsgpackPlugin* instance = [[FltmsgpackPlugin alloc] init];
+  FltMsgpackPlugin* instance = [[FltMsgpackPlugin alloc] init];
   [registrar addMethodCallDelegate:instance channel:channel];
 }
 

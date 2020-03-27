@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:fltmsgpack/fltmsgpack.dart';
+import 'package:fltmsgpack/flt_msgpack.dart';
 
 void main() => runApp(MyApp());
 

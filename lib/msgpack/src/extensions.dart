@@ -22,7 +22,7 @@ abstract class ExtensionFormat {
 }
 
 Map<int, ExtensionFormat> _extCache = <int, ExtensionFormat>{
-  -1: ExtTimeStamp(null)
+  -1: ExtTimeStamp(DateTime(0))
 };
 
 /// Register a type for the ExtensionFormat. Type [T] must implement the

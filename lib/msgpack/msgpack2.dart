@@ -28,7 +28,7 @@ class StringCache {
   }
 
   static List<int> get(String string) {
-    return _cache[string];
+    return _cache[string] ?? <int>[];
   }
 
   static void clear() {

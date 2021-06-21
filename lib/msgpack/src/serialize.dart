@@ -1,6 +1,6 @@
 part of msgpack;
 
-Uint8Encoder _uInt8Packer;
+Uint8Encoder? _uInt8Packer;
 
 /// This is a convenience function to pack a value to MsgPack Uint8List. It will
 /// handle creating the serializer, initializing the state and returning the
@@ -11,8 +11,8 @@ Uint8List serialize(dynamic value) {
     _uInt8Packer = Uint8Encoder();
   }
 
-  _uInt8Packer.encode(value);
-  return _uInt8Packer.done();
+  _uInt8Packer!.encode(value);
+  return _uInt8Packer!.done();
 }
 
 @deprecated
@@ -26,10 +26,10 @@ class Uint8Encoder {
   List<Uint8List> _buffers = <Uint8List>[];
   int _curBufId = 0;
 
-  Uint8List _list;
-  Uint8List get list => _list;
-  ByteData _bd;
-  ByteData get byteData => _bd;
+  Uint8List? _list;
+  Uint8List? get list => _list;
+  ByteData? _bd;
+  ByteData? get byteData => _bd;
   int _offset = 0;
   int _cachedBytes = 0;
   int _bufferSize = defaultBufferSize;
@@ -43,9 +43,9 @@ class Uint8Encoder {
     if (_list == null) {
       _list = Uint8List(_bufferSize);
     } else {
-      _bufferSize = _list.lengthInBytes;
+      _bufferSize = _list!.lengthInBytes;
     }
-    _bd = ByteData.view(_list.buffer);
+    _bd = ByteData.view(_list!.buffer);
   }
 
   /// This method will attempt to detect the appropriate method to pack the
@@ -85,7 +85,7 @@ class Uint8Encoder {
   /// This method will pack a null/nil value.
   void encodeNull() {
     _checkBuffer();
-    _list[_offset++] = 0xc0;
+    _list?[_offset++] = 0xc0;
   }
 
   /// This method will pack the [bool] value `true` or `false`
@@ -93,7 +93,7 @@ class Uint8Encoder {
     _checkBuffer();
     int data = 0xc2; // false
     if (value) data += 1; // true
-    _list[_offset++] = data;
+    _list?[_offset++] = data;
   }
 
   /// This method will pack both the appropriate [IntType] value and the value
@@ -105,7 +105,7 @@ class Uint8Encoder {
     if (value >= 0) {
       if (size < 8) {
         _checkBuffer();
-        _list[_offset++] = value;
+        _list?[_offset++] = value;
         return;
       }
 
@@ -119,7 +119,7 @@ class Uint8Encoder {
         type = IntType.Uint64;
       }
 
-      _list[_offset++] = type.value;
+      _list?[_offset++] = type.value;
       encodeIntType(type, value);
       return; // Done positive checks
     }
@@ -129,7 +129,7 @@ class Uint8Encoder {
     size += 1;
     if (size <= 6) {
       _checkBuffer();
-      _bd.setInt8(_offset++, value);
+      _bd?.setInt8(_offset++, value);
       return;
     } else if (size <= 8) {
       type = IntType.Int8;
@@ -141,7 +141,7 @@ class Uint8Encoder {
       type = IntType.Int64;
     }
 
-    _list[_offset++] = type.value;
+    _list?[_offset++] = type.value;
     encodeIntType(type, value);
   }
 
@@ -149,7 +149,7 @@ class Uint8Encoder {
   /// [IntType] value. This will only pack the specified [value]
   void encodeIntType(IntType type, int value) {
     _checkBuffer();
-    var rem = _list.lengthInBytes - _offset;
+    var rem = _list?.lengthInBytes ?? 0 - _offset;
 
     // Shortcut if there's definitely room
     if (rem >= 8) {
@@ -213,35 +213,35 @@ class Uint8Encoder {
   void _packFullInt(IntType type, int value) {
     switch (type) {
       case IntType.Uint8:
-        _list[_offset++] = value;
+        _list![_offset++] = value;
         return;
       case IntType.Uint16:
-        _writeBits(_list, value, 16, _offset);
+        _writeBits(_list!, value, 16, _offset);
         _offset += 2;
         return;
       case IntType.Uint32:
-        _writeBits(_list, value, 32, _offset);
+        _writeBits(_list!, value, 32, _offset);
         _offset += 4;
         return;
       case IntType.Uint64:
-        _writeBits(_list, value, 64, _offset);
+        _writeBits(_list!, value, 64, _offset);
         _offset += 8;
         return;
       case IntType.Int8:
-        _list[_offset++] = value + 0x100;
+        _list![_offset++] = value + 0x100;
         return;
       case IntType.Int16:
         value += 0x10000;
-        _writeBits(_list, value, 16, _offset);
+        _writeBits(_list!, value, 16, _offset);
         _offset += 2;
         return;
       case IntType.Int32:
         value += 0x100000000;
-        _writeBits(_list, value, 32, _offset);
+        _writeBits(_list!, value, 32, _offset);
         _offset += 4;
         return;
       case IntType.Int64:
-        _bd.setInt64(_offset, value);
+        _bd?.setInt64(_offset, value);
         _offset += 8;
         return;
     }
@@ -263,21 +263,21 @@ class Uint8Encoder {
       throw TypeError();
     }
     _checkBuffer();
-    _list[_offset++] = type.value;
+    _list?[_offset++] = type.value;
     encodeFloatType(type, val);
   }
 
   /// This method will pack the specified [double] value __without__ the msgPack
   /// [FloatType] value. This will only pack the specified [value]
   void encodeFloatType(FloatType type, double value) {
-    var rem = _list.lengthInBytes - _offset;
+    var rem = _list!.lengthInBytes - _offset;
 
     if (rem >= 4 && type == FloatType.Float32) {
-      _bd.setFloat32(_offset, value);
+      _bd?.setFloat32(_offset, value);
       _offset += 4;
       return;
     } else if (rem >= 8 && type == FloatType.Float64) {
-      _bd.setFloat64(_offset, value);
+      _bd?.setFloat64(_offset, value);
       _offset += 8;
       return;
     }
@@ -301,9 +301,9 @@ class Uint8Encoder {
   /// (up to 32 bit unsigned length) and the [String] itself, as well as
   /// increment the buffer offset appropriately.
   void encodeString(String value) {
-    Uint8List encoded;
+    late Uint8List encoded;
     if (StringCache.has(value)) {
-      encoded = StringCache.get(value);
+      encoded = StringCache.get(value) as Uint8List;
     } else {
       encoded = _toUTF8(value);
     }
@@ -383,12 +383,12 @@ class Uint8Encoder {
 
     if (len <= 15) {
       _checkBuffer();
-      _bd.setUint8(_offset++, len | ArrayType.FixArray.value);
+      _bd?.setUint8(_offset++, len | ArrayType.FixArray.value);
     } else if (len <= 0xffff) {
-      var rem = _list.lengthInBytes - _offset;
+      var rem = _list!.lengthInBytes - _offset;
       if (rem >= 3) {
-        _list[_offset++] = ArrayType.Array16.value;
-        _writeBits(_list, len, 16, _offset);
+        _list?[_offset++] = ArrayType.Array16.value;
+        _writeBits(_list!, len, 16, _offset);
         _offset += 2;
       } else {
         var pieces = Uint8List(3);
@@ -399,10 +399,10 @@ class Uint8Encoder {
     } else if (len > 0xffffffff) {
       throw ArgumentError('Array cannot contain more than Uint32 elements');
     } else {
-      var rem = _list.lengthInBytes - _offset;
+      var rem = _list!.lengthInBytes - _offset;
       if (rem >= 5) {
-        _list[_offset++] = ArrayType.Array32.value;
-        _writeBits(_list, len, 32, _offset);
+        _list?[_offset++] = ArrayType.Array32.value;
+        _writeBits(_list!, len, 32, _offset);
         _offset += 4;
       } else {
         var pieces = Uint8List(5);
@@ -428,15 +428,15 @@ class Uint8Encoder {
   void encodeMap(Map value) {
     var len = value.length;
 
-    var rem = _list.lengthInBytes - _offset;
+    var rem = _list!.lengthInBytes - _offset;
     if (len <= 15) {
       _checkBuffer();
-      _list[_offset++] = len | MapType.FixMap.value;
+      _list![_offset++] = len | MapType.FixMap.value;
     } else if (len <= 0xffff) {
       if (rem >= 3) {
         _checkBuffer();
-        _list[_offset++] = MapType.Map16.value;
-        _writeBits(_list, len, 16, _offset);
+        _list![_offset++] = MapType.Map16.value;
+        _writeBits(_list!, len, 16, _offset);
         _offset += 2;
       } else {
         var pieces = Uint8List(3);
@@ -448,8 +448,8 @@ class Uint8Encoder {
       throw ArgumentError('Map cannot contain more than Uint32 elements');
     } else {
       if (rem >= 5) {
-        _list[_offset++] = MapType.Map32.value;
-        _writeBits(_list, len, 32, _offset);
+        _list![_offset++] = MapType.Map32.value;
+        _writeBits(_list!, len, 32, _offset);
         _offset += 4;
       } else {
         var pieces = Uint8List(5);
@@ -482,13 +482,13 @@ class Uint8Encoder {
 
     var data = packer.done();
     _checkBuffer();
-    ExtType type;
+    ExtType? type;
 
     var len = data.lengthInBytes;
     if (len == 1) {
       type = ExtType.FixExt1;
     } else if (len == 2) {
-      type == ExtType.FixExt2;
+      type = ExtType.FixExt2;
     } else if (len == 4) {
       type = ExtType.FixExt4;
     } else if (len == 8) {
@@ -498,53 +498,53 @@ class Uint8Encoder {
     }
 
     if (type != null) {
-      _list[_offset++] = type.value;
+      _list?[_offset++] = type.value;
       _checkBuffer();
-      _bd.setInt8(_offset++, value.typeId);
+      _bd?.setInt8(_offset++, value.typeId);
       _packPartial(data);
       return;
     }
 
-    var rem = _list.lengthInBytes - _offset;
+    var rem = _list!.lengthInBytes - _offset;
     if (data.lengthInBytes <= 0xff) {
-      _list[_offset++] = ExtType.Ext8.value;
+      _list![_offset++] = ExtType.Ext8.value;
       _checkBuffer();
-      _list[_offset++] = data.lengthInBytes;
+      _list![_offset++] = data.lengthInBytes;
     } else if (data.lengthInBytes <= 0xffff) {
-      _list[_offset++] = ExtType.Ext16.value;
+      _list![_offset++] = ExtType.Ext16.value;
       if (rem < 3) {
         var pieces = Uint8List(2);
         _writeBits(pieces, data.lengthInBytes, 16, 0);
         _packPartial(pieces);
       } else {
-        _writeBits(_list, data.lengthInBytes, 16, _offset);
+        _writeBits(_list!, data.lengthInBytes, 16, _offset);
       }
       _offset += 2;
     } else if (data.lengthInBytes <= 0xffffffff) {
-      _list[_offset++] = ExtType.Ext32.value;
+      _list![_offset++] = ExtType.Ext32.value;
       if (rem < 5) {
         var pieces = Uint8List(4);
         _writeBits(pieces, data.lengthInBytes, 32, 0);
         _packPartial(pieces);
       } else {
-        _writeBits(_list, data.lengthInBytes, 32, _offset);
+        _writeBits(_list!, data.lengthInBytes, 32, _offset);
       }
     }
 
     _checkBuffer();
-    _bd.setInt8(_offset++, value.typeId);
+    _bd!.setInt8(_offset++, value.typeId);
     _packPartial(data);
   }
 
   void _packPartial(Uint8List pieces) {
     var ind = 0;
     while (ind < pieces.lengthInBytes) {
-      var spaceRem = _list.lengthInBytes - _offset;
+      var spaceRem = _list!.lengthInBytes - _offset;
       var piecesRem = pieces.lengthInBytes - ind;
       var stop = piecesRem > spaceRem ? spaceRem : piecesRem;
 
       for (var i = 0; i < stop; i++) {
-        _bd.setUint8(_offset++, pieces[ind++]);
+        _bd!.setUint8(_offset++, pieces[ind++]);
       }
 
       _checkBuffer();
@@ -567,21 +567,21 @@ class Uint8Encoder {
     var out = _collectData();
 
     if (!reuse) {
-      _buffers = List<Uint8List>();
+      _buffers = <Uint8List>[];
       _list = Uint8List(_bufferSize);
     }
 
     _cachedBytes = 0;
     _curBufId = 0;
     _offset = 0;
-    _bd = ByteData.view(_list.buffer, 0);
+    _bd = ByteData.view(_list!.buffer, 0);
 
     return out;
   }
 
   Uint8List _collectData() {
     if (_curBufId == 0) {
-      return _bd.buffer.asUint8List(0, _offset);
+      return _bd!.buffer.asUint8List(0, _offset);
     }
 
     var out = Uint8List(_cachedBytes + _offset);
@@ -593,24 +593,24 @@ class Uint8Encoder {
     }
 
     if (_offset > 0) {
-      out.setRange(ind, ind + _offset, _list);
+      out.setRange(ind, ind + _offset, _list!);
     }
     return out;
   }
 
   void _checkBuffer() {
-    if (_offset < _list.lengthInBytes) return;
+    if (_offset < _list!.lengthInBytes) return;
 
     if (_curBufId == _buffers.length) {
-      _buffers.add(_list);
+      _buffers.add(_list!);
     } else {
-      _buffers[_curBufId] = _list;
+      _buffers[_curBufId] = _list!;
     }
 
-    _cachedBytes += _list.lengthInBytes;
+    _cachedBytes += _list!.lengthInBytes;
 
     _list = Uint8List(_bufferSize);
-    _bd = ByteData.view(_list.buffer);
+    _bd = ByteData.view(_list!.buffer);
     _curBufId += 1;
     _offset = 0;
   }
